@@ -176,33 +176,33 @@ func replaceChain(newBlocks []Block) {
 // 	muxRouter.HandleFunc("/", handleWriteBlock).Methods("POST")
 // 	return muxRouter
 // }
-func handleGetBlockchain(w http.ResponseWriter, r *http.Request) {
-	bytes, err := json.MarshalIndent(Blockchain, "", "  ")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	io.WriteString(w, string(bytes))
-}
-func handleWriteBlock(w http.ResponseWriter, r *http.Request) {
-	m := &Message{}
-	err := json.NewDecoder(r.Body).Decode(m)
-	if err != nil {
-		respondWithJSON(w, r, http.StatusInternalServerError, m)
-	}
-	defer r.Body.Close()
-	newBlock, err := generateBlock(Blockchain[len(Blockchain)-1], m.BPM)
-	if err != nil {
-		respondWithJSON(w, r, http.StatusInternalServerError, m)
-		return
-	}
-	if isBlockValid(newBlock, Blockchain[len(Blockchain)-1]) {
-		newBlockChain := append(Blockchain, newBlock)
-		replaceChain(newBlockChain)
-		spew.Dump(Blockchain)
-	}
-	respondWithJSON(w, r, http.StatusCreated, newBlock)
-}
+// func handleGetBlockchain(w http.ResponseWriter, r *http.Request) {
+// 	bytes, err := json.MarshalIndent(Blockchain, "", "  ")
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
+// 	io.WriteString(w, string(bytes))
+// }
+// func handleWriteBlock(w http.ResponseWriter, r *http.Request) {
+// 	m := &Message{}
+// 	err := json.NewDecoder(r.Body).Decode(m)
+// 	if err != nil {
+// 		respondWithJSON(w, r, http.StatusInternalServerError, m)
+// 	}
+// 	defer r.Body.Close()
+// 	newBlock, err := generateBlock(Blockchain[len(Blockchain)-1], m.BPM)
+// 	if err != nil {
+// 		respondWithJSON(w, r, http.StatusInternalServerError, m)
+// 		return
+// 	}
+// 	if isBlockValid(newBlock, Blockchain[len(Blockchain)-1]) {
+// 		newBlockChain := append(Blockchain, newBlock)
+// 		replaceChain(newBlockChain)
+// 		spew.Dump(Blockchain)
+// 	}
+// 	respondWithJSON(w, r, http.StatusCreated, newBlock)
+// }
 func respondWithJSON(w http.ResponseWriter, r *http.Request, code int, payload interface{}) {
 	response, err := json.MarshalIndent(payload, "", "  ")
 	if err != nil {
